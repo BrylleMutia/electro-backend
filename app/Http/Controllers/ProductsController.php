@@ -40,8 +40,8 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        $product = Product::findOrFail($id)->first();
-        return $product;
+        $product = Product::findOrFail($id);
+        return response()->json($product, 200);
     }
 
     /**
@@ -53,7 +53,10 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $product->update($request->all());
+        
+        if($product->save()) return response()->json(["status" => "updated", "product" => $product], 200);
     }
 
     /**
@@ -64,6 +67,7 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        if($product->delete($product)) return response()->json(["status" => "deleted", "product" => $product], 200);
     }
 }

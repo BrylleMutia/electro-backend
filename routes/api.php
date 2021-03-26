@@ -1,10 +1,14 @@
 <?php
 
+use App\Models\User;
+
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\SellersController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +25,16 @@ use App\Http\Controllers\CategoriesController;
 //     return $request->user();
 // });
 
+Route::post('/register', [UsersController::class, 'register']);
+
+Route::post('/login', [UsersController::class, 'login']);
+
+Route::middleware('auth')->get('/verify', [UsersController::class, 'verify']);
+
+
+
 Route::apiResource('sellers', SellersController::class);
+
 Route::apiResource('categories', CategoriesController::class);
+
 Route::apiResource('products', ProductsController::class);
