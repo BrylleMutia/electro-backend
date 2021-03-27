@@ -29,12 +29,13 @@ Route::post('/register', [UsersController::class, 'register']);
 
 Route::post('/login', [UsersController::class, 'login']);
 
-Route::middleware('auth')->get('/verify', [UsersController::class, 'verify']);
+Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
 
 
-
-Route::apiResource('sellers', SellersController::class);
-
-Route::apiResource('categories', CategoriesController::class);
-
-Route::apiResource('products', ProductsController::class);
+Route::group(['middleware' => 'auth:sanctum'], function() {
+    Route::apiResource('sellers', SellersController::class);
+    
+    Route::apiResource('categories', CategoriesController::class);
+    
+    Route::apiResource('products', ProductsController::class);
+});

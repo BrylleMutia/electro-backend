@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller
 {
@@ -27,14 +28,27 @@ class UsersController extends Controller
      */
     public function register(Request $request)
     {
+        $request->validate([
+            'name' => ['required'],
+            'email' => ['required'],
+            'password' => ['required']
+        ]);
+
+        // validate for duplication
+        $user = User::where('email', $request->email)->first();
+        if($user) return response()->json(['error' => "Email is already registered."], 400);
+
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password'))   // encrypt password
         ]);
-
-        if ($user->save()) return response()->json($user, 200);
-        else return response()->json(['error' => "Email is already registered."], 400);
+        
+        if ($user->save()) {
+            $token = $this->login($request);
+            return response()->json(["user" => $user, "token" => $token->original], 200);
+            // return response()->json($user, 200);
+        };;
     }
 
     /**
@@ -43,12 +57,20 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function login()
+    public function login(Request $request)
     {
-        $credentials = request()->only(['email', 'password']);
+        $request->validate([
+            'email' => ['required'],
+            'password' => ['required']
+        ]);
 
-        $token = auth()->attempt($credentials);
-        return $token;  // token
+        $user = User::where('email', $request->email)->first();
+
+        if(!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'The provided credentials are invalid.']);
+        }
+
+        return response($user->createToken($user->name)->plainTextToken);
     }
 
     
