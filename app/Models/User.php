@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Payment;
+use App\Models\Product;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -23,6 +25,9 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'is_seller',
+        'location',
+        'cart_items'
     ];
 
     /**
@@ -42,6 +47,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'cart_items' => 'array'
     ];
 
     public function getJWTIdentifier() {
@@ -51,5 +57,8 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }
-    
+
+    public function payments() {
+        $this->hasMany(Payment::class, 'user_id');
+    }
 }

@@ -17,11 +17,13 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('product_name');
-            $table->integer('price');
+            $table->decimal('price', $precision = 9, $scale = 2);
             $table->foreignId('seller_id');
             $table->foreign('seller_id')->references('id')->on('sellers');
             $table->foreignId('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
+            $table->text('description')->nullable();
+            $table->json('product_image');
         });
     }
 

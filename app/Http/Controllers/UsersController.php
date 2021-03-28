@@ -31,7 +31,8 @@ class UsersController extends Controller
         $request->validate([
             'name' => ['required'],
             'email' => ['required'],
-            'password' => ['required']
+            'password' => ['required'],
+            'location' => ['required']
         ]);
 
         // validate for duplication
@@ -41,6 +42,7 @@ class UsersController extends Controller
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
+            'location' => $request->input('location'),
             'password' => Hash::make($request->input('password'))   // encrypt password
         ]);
         
@@ -48,15 +50,10 @@ class UsersController extends Controller
             $token = $this->login($request);
             return response()->json(["user" => $user, "token" => $token->original], 200);
             // return response()->json($user, 200);
-        };;
+        };
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function login(Request $request)
     {
         $request->validate([
@@ -107,5 +104,13 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
 
         if ($user->delete()) return response()->json(["status" => "deleted", "user" => $user], 200);
+    }
+
+    
+    // add item to user's cart
+    public function addToCart($id) {
+        $user = User::findOrFail($id);
+
+        $user->update()
     }
 }

@@ -25,15 +25,18 @@ use App\Http\Controllers\UsersController;
 //     return $request->user();
 // });
 
-Route::post('/register', [UsersController::class, 'register']);
+Route::post('/user/register', [UsersController::class, 'register']);
+Route::post('/user/login', [UsersController::class, 'login']);
 
-Route::post('/login', [UsersController::class, 'login']);
+Route::post('/seller/register', [SellersController::class, 'register']);
+Route::post('/seller/login', [SellersController::class, 'login']);
 
 Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
 
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
-    Route::apiResource('sellers', SellersController::class);
+    Route::get('/sellers', [SellersController::class, 'index']);
+    Route::get('/sellers/{id}', [SellersController::class, 'show']);
     
     Route::apiResource('categories', CategoriesController::class);
     

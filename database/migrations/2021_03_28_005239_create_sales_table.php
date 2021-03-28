@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReviewsTable extends Migration
+class CreateSalesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateReviewsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('seller_id');
+            $table->foreign('seller_id')->references('id')->on('sellers');
             $table->foreignId('product_id');
             $table->foreign('product_id')->references('id')->on('products');
-            $table->integer('rating');
-            $table->text('feedback');
-            $table->foreignId('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('quantity');
+            $table->string('buyer');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateReviewsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('sales');
     }
 }

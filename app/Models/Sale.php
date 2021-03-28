@@ -3,32 +3,26 @@
 namespace App\Models;
 
 use App\Models\Seller;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Product extends Model
+class Sale extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'product_name',
-        'price',
-        'product_image',
-        'description',
-        'category_id',
         'seller_id',
+        'product_id',
+        'quantity',
+        'buyer'
     ];
-
-    protected $casts = [
-        'product_image' => 'array'
-    ];
-
-    public function category() {
-        return $this->belongsTo(Category::class, 'category_id');
-    }
 
     public function seller() {
         return $this->belongsTo(Seller::class, 'seller_id');
     }
 
+    public function product() {
+        return $this->hasOne(Product::class, 'product_id');
+    }
 }
