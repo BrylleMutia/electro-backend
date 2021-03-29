@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller
@@ -28,16 +29,21 @@ class UsersController extends Controller
      */
     public function register(Request $request)
     {
-        $request->validate([
+        // validation
+        $validator = Validator::make($request->all(), [
             'name' => ['required'],
-            'email' => ['required'],
+            'email' => ['required', 'unique:App\Models\User,email', 'email'],
             'password' => ['required'],
             'location' => ['required']
+        ], [
+            'required' => 'The :attribute field is required.',
+            'unique' => 'The :attribute is already registered.'
         ]);
 
-        // validate for duplication
-        $user = User::where('email', $request->email)->first();
-        if($user) return response()->json(['error' => "Email is already registered."], 400);
+        if($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
 
         $user = User::create([
             'name' => $request->input('name'),
@@ -56,10 +62,18 @@ class UsersController extends Controller
     
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => ['required'],
+        // validation
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
             'password' => ['required']
+        ], [
+            'required' => 'The :attribute field is required.',
         ]);
+
+        if($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
 
         $user = User::where('email', $request->email)->first();
 
@@ -108,9 +122,9 @@ class UsersController extends Controller
 
     
     // add item to user's cart
-    public function addToCart($id) {
-        $user = User::findOrFail($id);
+    // public function addToCart($id) {
+    //     $user = User::findOrFail($id);
 
-        $user->update()
-    }
+    //     $user->update()
+    // }
 }

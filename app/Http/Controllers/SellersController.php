@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class SellersController extends Controller
 {
@@ -27,16 +28,21 @@ class SellersController extends Controller
      */
     public function register(Request $request)
     {
-        $request->validate([
+        // validation
+        $validator = Validator::make($request->all(), [
             'name' => ['required'],
-            'email' => ['required'],
+            'email' => ['required', 'unique:App\Models\User,email', 'email'],
             'password' => ['required'],
             'location' => ['required']
+        ], [
+            'required' => 'The :attribute field is required.',
+            'unique' => 'The :attribute is already registered.'
         ]);
 
-        // validate for duplication
-        $user = Seller::where('email', $request->email)->first();
-        if($user) return response()->json(['error' => "Email is already registered."], 400);
+        if($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        
 
         $user = Seller::create([
             'name' => $request->input('name'),
@@ -55,10 +61,18 @@ class SellersController extends Controller
     
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => ['required'],
+        // validation
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
             'password' => ['required']
+        ], [
+            'required' => 'The :attribute field is required.',
         ]);
+
+        if($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+        
 
         $user = Seller::where('email', $request->email)->first();
 
