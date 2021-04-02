@@ -21,34 +21,42 @@ class SellersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Register a new seller.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
     {
-        // validation
-        $validator = Validator::make($request->all(), [
-            'name' => ['required'],
+        // MANUAL VALIDATION
+        // $validator = Validator::make($request->all(), [
+        //     'name' => ['required'],
+        //     'email' => ['required', 'unique:App\Models\User,email', 'email'],
+        //     'password' => ['required'],
+        //     'location' => ['required']
+        // ], [
+        //     'required' => 'The :attribute field is required.',
+        //     'unique' => 'The :attribute is already registered.'
+        // ]);
+
+        // if($validator->fails()) {
+        //     return response()->json(['error' => $validator->errors()], 400);
+        // }
+
+
+        // include Accept-application/json header to work properly
+        $fields = $request->validate([
+            'name' => ['required', 'string'],
             'email' => ['required', 'unique:App\Models\User,email', 'email'],
-            'password' => ['required'],
+            'password' => ['required', 'string', 'confirmed'],
             'location' => ['required']
-        ], [
-            'required' => 'The :attribute field is required.',
-            'unique' => 'The :attribute is already registered.'
         ]);
-
-        if($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
         
-
         $user = Seller::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'location' => $request->input('location'),
-            'password' => Hash::make($request->input('password'))   // encrypt password
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'location' => $fields['location'],
+            'password' => Hash::make($fields['password'])   // encrypt password
         ]);
         
         if ($user->save()) {
@@ -58,21 +66,19 @@ class SellersController extends Controller
         };
     }
 
-    
+    /**
+     * Login to registered seller account
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function login(Request $request)
     {
         // validation
-        $validator = Validator::make($request->all(), [
+        $fields = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required']
-        ], [
-            'required' => 'The :attribute field is required.',
+            'password' => ['required', 'string'],
         ]);
-
-        if($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-        
 
         $user = Seller::where('email', $request->email)->first();
 
@@ -81,6 +87,18 @@ class SellersController extends Controller
         }
 
         return response($user->createToken($user->name)->plainTextToken);
+    }
+
+    /**
+     * Logout authenticated user / delete auth token.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request) {
+        auth()->user()->tokens()->delete();
+
+        return ['message' => 'Logged out'];
     }
 
 

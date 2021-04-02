@@ -70,4 +70,17 @@ class ProductsController extends Controller
         $product = Product::findOrFail($id);
         if($product->delete($product)) return response()->json(["status" => "deleted", "product" => $product], 200);
     }
+
+    /**
+     * Search for a specific product name
+     * 
+     * @param string $name
+     * @return \Illuminate\Http\Response
+     */
+
+     public function search($name) {
+         $product = Product::where('product_name', 'like', '%'.$name.'%')->get();
+
+         return response()->json($product, 200);
+     }
 }

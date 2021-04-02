@@ -25,20 +25,25 @@ use App\Http\Controllers\UsersController;
 //     return $request->user();
 // });
 
+
+// PUBLIC ROUTES
 Route::post('/user/register', [UsersController::class, 'register']);
 Route::post('/user/login', [UsersController::class, 'login']);
 
 Route::post('/seller/register', [SellersController::class, 'register']);
 Route::post('/seller/login', [SellersController::class, 'login']);
+Route::post('/seller/logout', [SellersController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
 
 
+// PROTECTED ROUTES
 Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('/sellers', [SellersController::class, 'index']);
     Route::get('/sellers/{id}', [SellersController::class, 'show']);
     
     Route::apiResource('categories', CategoriesController::class);
     
+    Route::get('/products/search/{name}', [ProductsController:: class, 'search']);
     Route::apiResource('products', ProductsController::class);
 });

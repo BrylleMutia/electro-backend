@@ -22,73 +22,92 @@ class UsersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Register a new user.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
     {
-        // validation
-        $validator = Validator::make($request->all(), [
-            'name' => ['required'],
+        // MANUAL VALIDATION
+        // $validator = Validator::make($request->all(), [
+        //     'name' => ['required'],
+        //     'email' => ['required', 'unique:App\Models\User,email', 'email'],
+        //     'password' => ['required'],
+        //     'location' => ['required']
+        // ], [
+        //     'required' => 'The :attribute field is required.',
+        //     'unique' => 'The :attribute is already registered.'
+        // ]);
+
+        // if($validator->fails()) {
+        //     return response()->json(['error' => $validator->errors()], 400);
+        // }
+
+
+        // include Accept-application/json header to work properly
+        $fields = $request->validate([
+            'name' => ['required', 'string'],
             'email' => ['required', 'unique:App\Models\User,email', 'email'],
-            'password' => ['required'],
+            'password' => ['required', 'string', 'confirmed'],  // confirmed = need password_confirmation field
             'location' => ['required']
-        ], [
-            'required' => 'The :attribute field is required.',
-            'unique' => 'The :attribute is already registered.'
         ]);
-
-        if($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
 
         $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'location' => $request->input('location'),
-            'password' => Hash::make($request->input('password'))   // encrypt password
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'location' => $fields['location'],
+            'password' => Hash::make($fields['password'])   // encrypt password
         ]);
-        
+
         if ($user->save()) {
             $token = $this->login($request);
             return response()->json(["user" => $user, "token" => $token->original], 200);
-            // return response()->json($user, 200);
         };
     }
 
-    
+    /**
+     * Login to registered User account
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function login(Request $request)
     {
         // validation
-        $validator = Validator::make($request->all(), [
+        $fields = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required']
-        ], [
-            'required' => 'The :attribute field is required.',
+            'password' => ['required', 'string'],
         ]);
 
-        if($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
+        $user = User::where('email', $fields['email'])->first();
 
-
-        $user = User::where('email', $request->email)->first();
-
-        if(!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response()->json(['error' => 'The provided credentials are invalid.']);
         }
 
         return response($user->createToken($user->name)->plainTextToken);
     }
 
-    
-    // get and verify current user details using token
-    public function verify() 
+    /**
+     * Get user details using token
+     */
+    public function verify()
     {
         return auth()->user();
+    }
+
+    /**
+     * Logout authenticated user / delete auth token.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+
+        return ['message' => 'Logged out'];
     }
 
 
@@ -120,7 +139,7 @@ class UsersController extends Controller
         if ($user->delete()) return response()->json(["status" => "deleted", "user" => $user], 200);
     }
 
-    
+
     // add item to user's cart
     // public function addToCart($id) {
     //     $user = User::findOrFail($id);
