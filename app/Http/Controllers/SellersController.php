@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class SellersController extends Controller
 {
@@ -90,13 +89,21 @@ class SellersController extends Controller
     }
 
     /**
+     * Get user details using token
+     */
+    public function verify()
+    {
+        return auth()->guard('seller')->user();
+    }
+
+    /**
      * Logout authenticated user / delete auth token.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function logout(Request $request) {
-        auth()->user()->tokens()->delete();
+        auth()->guard('seller')->user()->tokens()->delete();
 
         return ['message' => 'Logged out'];
     }

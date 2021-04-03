@@ -15,6 +15,8 @@ class Seller extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $guard = 'seller';
+
     /**
      * The attributes that are mass assignable.
      *

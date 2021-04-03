@@ -27,14 +27,20 @@ use App\Http\Controllers\UsersController;
 
 
 // PUBLIC ROUTES
-Route::post('/user/register', [UsersController::class, 'register']);
-Route::post('/user/login', [UsersController::class, 'login']);
+Route::prefix('user')->group(function() {
+    Route::post('/register', [UsersController::class, 'register']);
+    Route::post('/login', [UsersController::class, 'login']);
+    Route::post('/logout', [UsersController::class, 'logout']);
+    Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
+});
 
-Route::post('/seller/register', [SellersController::class, 'register']);
-Route::post('/seller/login', [SellersController::class, 'login']);
-Route::post('/seller/logout', [SellersController::class, 'logout']);
+Route::prefix('seller')->group(function() {
+    Route::post('/register', [SellersController::class, 'register']);
+    Route::post('/login', [SellersController::class, 'login']);
+    Route::post('/logout', [SellersController::class, 'logout']);
+    Route::middleware('auth:sanctum')->get('/verify', [SellersController::class, 'verify']);
+});
 
-Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
 
 
 // PROTECTED ROUTES
