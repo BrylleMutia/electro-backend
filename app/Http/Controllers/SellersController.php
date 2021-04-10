@@ -46,18 +46,18 @@ class SellersController extends Controller
         // include Accept-application/json header to work properly
         $fields = $request->validate([
             'name' => ['required', 'string'],
-            'email' => ['required', 'unique:App\Models\User,email', 'email'],
+            'email' => ['required', 'unique:App\Models\Seller,email', 'email'],
             'password' => ['required', 'string', 'confirmed'],
             'location' => ['required']
         ]);
-        
+
         $user = Seller::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'location' => $fields['location'],
             'password' => Hash::make($fields['password'])   // encrypt password
         ]);
-        
+
         if ($user->save()) {
             $token = $this->login($request);
             return response()->json(["user" => $user, "token" => $token->original], 200);
@@ -81,11 +81,11 @@ class SellersController extends Controller
 
         $user = Seller::where('email', $request->email)->first();
 
-        if(!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['error' => 'The provided credentials are invalid.']);
         }
 
-        return response($user->createToken($user->name)->plainTextToken);
+        return response()->json(["user" => $user, "token" => $user->createToken($user->name)->plainTextToken]);
     }
 
     /**
@@ -102,7 +102,8 @@ class SellersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         auth()->guard('seller')->user()->tokens()->delete();
 
         return ['message' => 'Logged out'];

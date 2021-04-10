@@ -21,6 +21,11 @@ class UsersController extends Controller
         return response()->json($users, 200);
     }
 
+    public function test(Request $request)
+    {
+        return response()->json(["message" => $request->all()]);
+    }
+
     /**
      * Register a new user.
      *
@@ -61,8 +66,8 @@ class UsersController extends Controller
         ]);
 
         if ($user->save()) {
-            $token = $this->login($request);
-            return response()->json(["user" => $user, "token" => $token->original], 200);
+            // automatically login registered user
+            return response()->json($this->login($request)->original, 200);
         };
     }
 
@@ -83,10 +88,10 @@ class UsersController extends Controller
         $user = User::where('email', $fields['email'])->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return response()->json(['error' => 'The provided credentials are invalid.']);
+            return response()->json(['error' => 'The provided credentials are invalid.'], 404);
         }
 
-        return response($user->createToken($user->name)->plainTextToken);
+        return response()->json(["user" => $user, "token" => $user->createToken($user->name)->plainTextToken]);
     }
 
     /**

@@ -21,20 +21,18 @@ use App\Http\Controllers\UsersController;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
+Route::post("/test", [UsersController::class, 'test']);
 
 // PUBLIC ROUTES
-Route::prefix('user')->group(function() {
+Route::prefix('user')->group(function () {
     Route::post('/register', [UsersController::class, 'register']);
     Route::post('/login', [UsersController::class, 'login']);
     Route::post('/logout', [UsersController::class, 'logout']);
     Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
 });
 
-Route::prefix('seller')->group(function() {
+Route::prefix('seller')->group(function () {
     Route::post('/register', [SellersController::class, 'register']);
     Route::post('/login', [SellersController::class, 'login']);
     Route::post('/logout', [SellersController::class, 'logout']);
@@ -44,12 +42,12 @@ Route::prefix('seller')->group(function() {
 
 
 // PROTECTED ROUTES
-Route::group(['middleware' => 'auth:sanctum'], function() {
+Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/sellers', [SellersController::class, 'index']);
     Route::get('/sellers/{id}', [SellersController::class, 'show']);
-    
+
     Route::apiResource('categories', CategoriesController::class);
-    
-    Route::get('/products/search/{name}', [ProductsController:: class, 'search']);
+
+    Route::get('/products/search/{name}', [ProductsController::class, 'search']);
     Route::apiResource('products', ProductsController::class);
 });
