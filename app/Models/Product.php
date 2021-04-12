@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Offer;
 use App\Models\Seller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,7 @@ class Product extends Model
         'description',
         'category_id',
         'seller_id',
+        'offer_id'
     ];
 
     protected $casts = [
@@ -29,6 +31,10 @@ class Product extends Model
 
     public function seller() {
         return $this->belongsTo(Seller::class, 'seller_id');
+    }
+
+    public function offer() {
+        return $this->belongsTo(Offer::class, 'offer_id');
     }
 
 }

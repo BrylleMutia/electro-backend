@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\SellersController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\UsersController;
 
 /*
@@ -45,6 +46,9 @@ Route::prefix('seller')->group(function () {
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/sellers', [SellersController::class, 'index']);
     Route::get('/sellers/{id}', [SellersController::class, 'show']);
+
+    Route::get('/offers/{title}', [OfferController::class, 'products']);
+    Route::apiResource('offers', OfferController::class);
 
     Route::apiResource('categories', CategoriesController::class);
 

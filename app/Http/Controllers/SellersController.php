@@ -59,9 +59,7 @@ class SellersController extends Controller
         ]);
 
         if ($user->save()) {
-            $token = $this->login($request);
-            return response()->json(["user" => $user, "token" => $token->original], 200);
-            // return response()->json($user, 200);
+            return response()->json($this->login($request)->original, 200);
         };
     }
 
@@ -79,9 +77,9 @@ class SellersController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = Seller::where('email', $request->email)->first();
+        $user = Seller::where('email', $fields['email'])->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response()->json(['error' => 'The provided credentials are invalid.']);
         }
 
