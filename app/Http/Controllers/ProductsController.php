@@ -27,7 +27,25 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $product = Product::create($request->all());
-        if($product->save()) {
+
+        // // store all product images
+        $images_path = [];
+        foreach ($request->allFiles('product_image') as $product_image) {
+            // for storing files on local/public directories
+            // $image_path = $product_image->store('product_images');
+
+            // upload image to cloudinary cloud storage
+            // then get url to save to db
+            $image_url = cloudinary()->upload($product_image->getRealPath())->getSecurePath();
+
+            array_push($images_path, $image_url);
+        }
+        
+        // $images_path = $request->file('product_image')->store('product_images');
+        
+        $product->product_image = $images_path;
+
+        if ($product->save()) {
             return response()->json($product, 200);
         }
     }
@@ -55,8 +73,8 @@ class ProductsController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->update($request->all());
-        
-        if($product->save()) return response()->json(["status" => "updated", "product" => $product], 200);
+
+        if ($product->save()) return response()->json(["status" => "updated", "product" => $product], 200);
     }
 
     /**
@@ -68,7 +86,7 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
-        if($product->delete($product)) return response()->json(["status" => "deleted", "product" => $product], 200);
+        if ($product->delete($product)) return response()->json(["status" => "deleted", "product" => $product], 200);
     }
 
     /**
@@ -78,9 +96,10 @@ class ProductsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function search($name) {
-         $product = Product::where('product_name', 'like', '%'.$name.'%')->get();
+    public function search($name)
+    {
+        $product = Product::where('product_name', 'like', '%' . $name . '%')->get();
 
-         return response()->json($product, 200);
-     }
+        return response()->json($product, 200);
+    }
 }

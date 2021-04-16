@@ -6,10 +6,11 @@ use App\Models\Offer;
 use App\Models\Seller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, MediaAlly;
 
     protected $fillable = [
         'product_name',
