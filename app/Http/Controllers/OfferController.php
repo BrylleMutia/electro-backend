@@ -14,7 +14,13 @@ class OfferController extends Controller
      */
     public function index()
     {
-        //
+        $offers = Offer::all();
+
+        foreach($offers as $offer) {
+            $offer['products'] = $offer->products;
+        };
+
+        return response()->json($offers, 200);
     }
 
     /**
