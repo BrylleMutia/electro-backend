@@ -17,13 +17,16 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('product_name');
-            $table->decimal('price', $precision = 9, $scale = 2);
+            $table->integer('price')->default(0);
+            $table->text('description')->nullable();
+            $table->json('product_image');
+            $table->string('slug')->unique();
             $table->foreignId('seller_id');
             $table->foreign('seller_id')->references('id')->on('sellers');
             $table->foreignId('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->text('description')->nullable();
-            $table->json('product_image');
+            $table->foreignId('offer_id')->nullable();
+            $table->foreign('offer_id')->references('id')->on('offers');
         });
     }
 

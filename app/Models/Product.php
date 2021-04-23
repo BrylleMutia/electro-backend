@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use App\Models\Offer;
+use App\Models\Order;
 use App\Models\Seller;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -26,8 +27,12 @@ class Product extends Model
         'product_image' => 'array'
     ];
 
-    public function category() {
-        return $this->belongsTo(Category::class, 'category_id');
+    public function categories() {
+        return $this->belongsToMany(Category::class, 'category_id');
+    }
+
+    public function orders() {
+        return $this->belongsToMany(Order::class, 'order_id');
     }
 
     public function seller() {
