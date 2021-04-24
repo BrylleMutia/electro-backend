@@ -26,7 +26,11 @@ class Seller extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'location',
+        'address',
+        'barangay',
+        'city',
+        'province',
+        'zip_code'
     ];
 
     /**

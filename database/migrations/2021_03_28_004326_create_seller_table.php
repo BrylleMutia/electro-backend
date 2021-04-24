@@ -20,7 +20,11 @@ class CreateSellerTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->text('location');
+            $table->string('address');
+            $table->string('barangay');
+            $table->string('city');
+            $table->string('province');
+            $table->string('zip_code');
             $table->rememberToken();
         });
     }

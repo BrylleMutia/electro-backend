@@ -55,13 +55,21 @@ class UsersController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required', 'unique:App\Models\User,email', 'email'],
             'password' => ['required', 'string', 'confirmed'],  // confirmed = need password_confirmation field
-            'location' => ['required']
+            'address' => ['string'],
+            'barangay' => ['string', 'required'],
+            'city' => ['required', 'string'],
+            'province' => ['required', 'string'],
+            'zip_code' => ['required', 'string']
         ]);
 
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'location' => $fields['location'],
+            'address' => $fields['address'],
+            'barangay' => $fields['barangay'],
+            'city' => $fields['city'],
+            'province' => $fields['province'],
+            'zip_code' => $fields['zip_code'],
             'password' => Hash::make($fields['password'])   // encrypt password
         ]);
 
