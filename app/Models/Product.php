@@ -28,12 +28,15 @@ class Product extends Model
         'product_image' => 'array'
     ];
 
+    // protected $with = ['categories', 'seller', 'offer', 'orders'];
+
     public function categories() {
-        return $this->belongsToMany(Category::class, 'category_id');
+        // take note of the pivot table assignment
+        return $this->belongsToMany(Category::class, 'category_product');
     }
 
     public function orders() {
-        return $this->belongsToMany(Order::class, 'order_id');
+        return $this->belongsToMany(Order::class, 'order_product');
     }
 
     public function seller() {

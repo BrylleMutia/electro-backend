@@ -23,8 +23,6 @@ class CreateProductsTable extends Migration
             $table->string('slug')->unique();
             $table->foreignId('seller_id');
             $table->foreign('seller_id')->references('id')->on('sellers');
-            $table->foreignId('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
             $table->foreignId('offer_id')->nullable();
             $table->foreign('offer_id')->references('id')->on('offers');
         });

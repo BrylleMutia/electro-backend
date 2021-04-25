@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
+use App\Models\Offer;
 use App\Models\Product;
+use App\Models\Seller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,6 +26,10 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
+        // for implementation of relationships
+        $seller = Seller::all()->random();
+        $offer = Offer::all()->random();
+
         // for product name, combine random company name with product as suffix
         $productSuffixes = ['Sweater', 'Pants', 'Shirt', 'Glasses', 'Hat', 'Socks'];
         $name = $this->faker->company . ' ' . Arr::random($productSuffixes);
@@ -42,6 +49,8 @@ class ProductFactory extends Factory
              'description' => $this->faker->realText(300),
              'price' => $this->faker->numberBetween(200, 10000),
              'product_image' => Arr::random($image_urls),
+             'seller_id' => $seller->id,
+             'offer_id' => $offer->id
         ];
     }
 }
