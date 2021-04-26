@@ -55,7 +55,7 @@ class UsersController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required', 'unique:App\Models\User,email', 'email'],
             'password' => ['required', 'string', 'confirmed'],  // confirmed = need password_confirmation field
-            'address' => ['string'],
+            'address' => [],
             'barangay' => ['string', 'required'],
             'city' => ['required', 'string'],
             'province' => ['required', 'string'],
@@ -96,7 +96,7 @@ class UsersController extends Controller
         $user = User::where('email', $fields['email'])->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return response()->json(['error' => 'The provided credentials are invalid.'], 404);
+            return response()->json(['message' => 'The provided credentials are invalid.', 'errors' => ['error' => 'The provided credentials are invalid.']], 404);
         }
 
         return response()->json(["user" => $user, "token" => $user->createToken($user->name)->plainTextToken]);

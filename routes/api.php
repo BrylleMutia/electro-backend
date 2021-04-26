@@ -40,18 +40,19 @@ Route::prefix('seller')->group(function () {
     Route::middleware('auth:sanctum')->get('/verify', [SellersController::class, 'verify']);
 });
 
+Route::get('/sellers', [SellersController::class, 'index']);
+Route::get('/sellers/{id}', [SellersController::class, 'show']);
+
+Route::get('/offers/{title}', [OfferController::class, 'products']);
+Route::apiResource('offers', OfferController::class);
+
+Route::apiResource('categories', CategoriesController::class);
+
+Route::get('/products/search/{name}', [ProductsController::class, 'search']);
+Route::apiResource('products', ProductsController::class);
 
 
 // PROTECTED ROUTES
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/sellers', [SellersController::class, 'index']);
-    Route::get('/sellers/{id}', [SellersController::class, 'show']);
-
-    Route::get('/offers/{title}', [OfferController::class, 'products']);
-    Route::apiResource('offers', OfferController::class);
-
-    Route::apiResource('categories', CategoriesController::class);
-
-    Route::get('/products/search/{name}', [ProductsController::class, 'search']);
-    Route::apiResource('products', ProductsController::class);
+    //
 });

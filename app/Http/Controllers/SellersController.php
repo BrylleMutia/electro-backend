@@ -48,7 +48,6 @@ class SellersController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required', 'unique:App\Models\Seller,email', 'email'],
             'password' => ['required', 'string', 'confirmed'],
-            'address' => ['string'],
             'barangay' => ['string', 'required'],
             'city' => ['required', 'string'],
             'province' => ['required', 'string'],
@@ -88,7 +87,7 @@ class SellersController extends Controller
         $user = Seller::where('email', $fields['email'])->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return response()->json(['error' => 'The provided credentials are invalid.']);
+            return response()->json(['message' => 'The provided credentials are invalid.', 'errors' => ['error' => 'The provided credentials are invalid.']], 404);
         }
 
         return response()->json(["user" => $user, "token" => $user->createToken($user->name)->plainTextToken]);
