@@ -70,6 +70,6 @@ class Seller extends Authenticatable implements JWTSubject
     }
 
     public function role() {
-        return $this->belongsTo(Role::class, 'order_id');
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }

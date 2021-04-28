@@ -87,7 +87,7 @@ class SellersController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = Seller::where('email', $fields['email'])->first();
+        $user = Seller::with('role')->where('email', $fields['email'])->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response()->json(['message' => 'The provided credentials are invalid.', 'errors' => ['error' => 'The provided credentials are invalid.']], 404);
