@@ -48,10 +48,12 @@ class SellersController extends Controller
             'name' => ['required', 'string'],
             'email' => ['required', 'unique:App\Models\Seller,email', 'email'],
             'password' => ['required', 'string', 'confirmed'],
+            'address' => [],
             'barangay' => ['string', 'required'],
             'city' => ['required', 'string'],
             'province' => ['required', 'string'],
-            'zip_code' => ['required', 'string']
+            'zip_code' => ['required', 'string'],
+            'role_id' => []
         ]);
 
         $user = Seller::create([
@@ -62,6 +64,7 @@ class SellersController extends Controller
             'city' => $fields['city'],
             'province' => $fields['province'],
             'zip_code' => $fields['zip_code'],
+            'role_id' => 2,     // 1 = buyer, 2 = seller
             'password' => Hash::make($fields['password'])   // encrypt password
         ]);
 

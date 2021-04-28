@@ -59,7 +59,8 @@ class UsersController extends Controller
             'barangay' => ['string', 'required'],
             'city' => ['required', 'string'],
             'province' => ['required', 'string'],
-            'zip_code' => ['required', 'string']
+            'zip_code' => ['required', 'string'],
+            'role_id' => []
         ]);
 
         $user = User::create([
@@ -70,6 +71,7 @@ class UsersController extends Controller
             'city' => $fields['city'],
             'province' => $fields['province'],
             'zip_code' => $fields['zip_code'],
+            'role_id' => 1,  // 1 = buyer, 2 = seller
             'password' => Hash::make($fields['password'])   // encrypt password
         ]);
 

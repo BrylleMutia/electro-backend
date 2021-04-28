@@ -30,7 +30,8 @@ class Seller extends Authenticatable implements JWTSubject
         'barangay',
         'city',
         'province',
-        'zip_code'
+        'zip_code',
+        'role_id'
     ];
 
     /**
@@ -66,5 +67,9 @@ class Seller extends Authenticatable implements JWTSubject
 
     public function sales() {
         return $this->hasMany(Sale::class, 'seller_id');
+    }
+
+    public function role() {
+        return $this->belongsTo(Role::class, 'order_id');
     }
 }

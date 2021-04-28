@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Seller;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SellerFactory extends Factory
+class UserFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Seller::class;
+    protected $model = User::class;
 
     /**
      * Define the model's default state.
@@ -31,7 +31,7 @@ class SellerFactory extends Factory
             'barangay' => $this->faker->streetName,
             'province' => $this->faker->state,
             'zip_code' => $this->faker->postcode,
-            'role_id' => 2,    // 1 = buyer, 2 = seller
+            'role_id' => 1,    // 1 = buyer, 2 = seller
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ];
