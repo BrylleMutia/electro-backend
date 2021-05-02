@@ -14,7 +14,17 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::with('categories:id,name', 'offer', 'seller')->get();
+        $limit = request()->query('limit');
+
+        if($limit > 0) {
+            // get products with a certain limit
+            $products = Product::with('categories:id,name', 'offer', 'seller')->take($limit)->orderBy('created_at', 'desc')->get();
+        } else {
+            // get all
+            $products = Product::with('categories:id,name', 'offer', 'seller')->orderBy('created_at', 'desc')->get();
+        }
+
+
         return response()->json($products);
     }
 
@@ -29,21 +39,21 @@ class ProductsController extends Controller
         $product = Product::create($request->all());
 
         // // store all product images
-        $images_path = [];
-        foreach ($request->allFiles('product_image') as $product_image) {
-            // for storing files on local/public directories
-            // $image_path = $product_image->store('product_images');
+        // $images_path = [];
+        // foreach ($request->allFiles('product_image') as $product_image) {
+        //     // for storing files on local/public directories
+        //     // $image_path = $product_image->store('product_images');
 
-            // upload image to cloudinary cloud storage
-            // then get url to save to db
-            $image_url = cloudinary()->upload($product_image->getRealPath())->getSecurePath();
+        //     // upload image to cloudinary cloud storage
+        //     // then get url to save to db
+        //     $image_url = cloudinary()->upload($product_image->getRealPath())->getSecurePath();
 
-            array_push($images_path, $image_url);
-        }
+        //     array_push($images_path, $image_url);
+        // }
         
-        // $images_path = $request->file('product_image')->store('product_images');
+        // // $images_path = $request->file('product_image')->store('product_images');
         
-        $product->product_image = $images_path;
+        // $product->product_image = $images_path;
 
         if ($product->save()) {
             return response()->json($product, 200);
