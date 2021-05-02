@@ -126,8 +126,7 @@ class SellersController extends Controller
      */
     public function show($id)
     {
-        $seller = Seller::findOrFail($id);
-        $seller['products'] = $seller->products;
+        $seller = Seller::with('products')->findOrFail($id);
         return $seller;
     }
 
