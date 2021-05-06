@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,10 +23,19 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $image_urls = [
+            "https://res.cloudinary.com/bryllemutia/image/upload/v1620284808/users/kwzarax3qrwpf1snzs0h.jpg",
+            "https://res.cloudinary.com/bryllemutia/image/upload/v1620284935/users/e4nvl4beqfibhixtntay.jpg",
+            "https://res.cloudinary.com/bryllemutia/image/upload/v1620284964/users/epqcjh8lbpge978mm1zc.jpg",
+            "https://res.cloudinary.com/bryllemutia/image/upload/v1620284991/users/gzk2pvvy3ffjylwxarx8.jpg",
+            "https://res.cloudinary.com/bryllemutia/image/upload/v1620285045/users/cqzbe1ss9owlribjrhy9.jpg"
+        ];
+
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
+            'image' => Arr::random($image_urls),
             'address' => $this->faker->streetAddress,
             'city' => $this->faker->city,
             'barangay' => $this->faker->streetName,

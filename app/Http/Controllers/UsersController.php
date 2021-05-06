@@ -75,6 +75,12 @@ class UsersController extends Controller
             'password' => Hash::make($fields['password'])   // encrypt password
         ]);
 
+        // user image
+        if ($request->hasFile('image')) {
+            $image_path = $request->file('image')->storeOnCloudinary('users')->getSecurePath();
+            $user->image = $image_path;
+        }
+
         if ($user->save()) {
             // automatically login registered user
             return response()->json($this->login($request)->original, 200);

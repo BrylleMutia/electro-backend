@@ -68,6 +68,12 @@ class SellersController extends Controller
             'password' => Hash::make($fields['password'])   // encrypt password
         ]);
 
+        // seller image
+        if ($request->hasFile('image')) {
+            $image_path = $request->file('image')->storeOnCloudinary('sellers')->getSecurePath();
+            $user->image = $image_path;
+        }
+
         if ($user->save()) {
             return response()->json($this->login($request)->original, 200);
         };

@@ -38,22 +38,18 @@ class ProductsController extends Controller
     {
         $product = Product::create($request->all());
 
-        // // store all product images
+        // // multiple image upload
         // $images_path = [];
         // foreach ($request->allFiles('product_image') as $product_image) {
-        //     // for storing files on local/public directories
-        //     // $image_path = $product_image->store('product_images');
-
         //     // upload image to cloudinary cloud storage
         //     // then get url to save to db
         //     $image_url = cloudinary()->upload($product_image->getRealPath())->getSecurePath();
-
         //     array_push($images_path, $image_url);
         // }
         
-        // // $images_path = $request->file('product_image')->store('product_images');
-        
-        // $product->product_image = $images_path;
+        // single image upload
+        $images_path = $request->file('product_image')->storeOnCloudinary('products')->getSecurePath();
+        $product->product_image = $images_path;
 
         if ($product->save()) {
             return response()->json($product, 200);
