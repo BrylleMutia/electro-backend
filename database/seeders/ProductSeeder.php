@@ -16,7 +16,6 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        Category::factory()->count(5)->create();
         Product::factory()->count(10)->create();
 
         // manually implement relationships (for pivot table)
@@ -26,7 +25,5 @@ class ProductSeeder extends Seeder
                 $categories->random(2)->pluck('id')->toArray()
             );
         });
-
-        Review::factory()->count(50)->create();
     }
 }
