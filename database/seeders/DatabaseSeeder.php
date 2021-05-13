@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Offer;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Role;
 use App\Models\Seller;
 use App\Models\User;
@@ -74,6 +75,6 @@ class DatabaseSeeder extends Seeder
             );
         });
 
-
+        Review::factory()->count(50)->create();
     }
 }
