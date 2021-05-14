@@ -47,4 +47,8 @@ class Product extends Model
         return $this->belongsTo(Offer::class, 'offer_id');
     }
 
+    public function reviews() {
+        return $this->hasMany(Review::class, 'product_id');
+    }
+
 }
