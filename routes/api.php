@@ -26,7 +26,7 @@ use App\Http\Controllers\UsersController;
 Route::post("/test", [UsersController::class, 'test']);
 
 // PUBLIC ROUTES
-Route::prefix('user')->group(function () {
+Route::prefix('buyer')->group(function () {
     Route::post('/register', [UsersController::class, 'register']);
     Route::post('/login', [UsersController::class, 'login']);
     Route::post('/logout', [UsersController::class, 'logout']);
