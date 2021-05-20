@@ -29,16 +29,16 @@ Route::post("/test", [UsersController::class, 'test']);
 Route::prefix('buyer')->group(function () {
     Route::post('/register', [UsersController::class, 'register']);
     Route::post('/login', [UsersController::class, 'login']);
-    Route::post('/logout', [UsersController::class, 'logout']);
-    Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
+    Route::get('/logout', [UsersController::class, 'logout']);
 });
 
 Route::prefix('seller')->group(function () {
     Route::post('/register', [SellersController::class, 'register']);
     Route::post('/login', [SellersController::class, 'login']);
-    Route::post('/logout', [SellersController::class, 'logout']);
-    Route::middleware('auth:sanctum')->get('/verify', [SellersController::class, 'verify']);
+    Route::get('/logout', [SellersController::class, 'logout']);
 });
+
+Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
 
 Route::get('/sellers', [SellersController::class, 'index']);
 Route::get('/sellers/{id}', [SellersController::class, 'show']);
