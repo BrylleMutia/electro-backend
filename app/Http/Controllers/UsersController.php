@@ -101,7 +101,7 @@ class UsersController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::with('role')->where('email', $fields['email'])->first();
+        $user = User::where('email', $fields['email'])->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response()->json(['message' => 'The provided credentials are invalid.', 'errors' => ['error' => 'The provided credentials are invalid.']], 404);
