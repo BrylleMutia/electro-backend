@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Models\Order;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
-
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, MediaAlly;
+    use HasApiTokens, HasFactory, Notifiable, MediaAlly, Billable;
 
     /**
      * The attributes that are mass assignable.

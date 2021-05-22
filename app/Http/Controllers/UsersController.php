@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -131,6 +132,52 @@ class UsersController extends Controller
         auth()->user()->tokens()->delete();
 
         return ['message' => 'Logged out'];
+    }
+
+
+    /**
+     * Add a new purchase record (using stripe)
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function purchase(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+
+        try {
+            // create stripe customer
+            // so that user details will also be sent to stripe
+            $user->createOrGetStripeCustomer();
+
+            // DOCS: https://laravel.com/docs/8.x/billing#single-charges
+            $payment = $user->charge(
+                $request->input('amount') . "00",   // include cents (lowest denominator needed here)
+                $request->input('payment_method_id')
+            );
+
+            // get additional payment details for order table
+            $payment = $payment->asStripePaymentIntent();
+
+            // create order
+            $order = Order::create([
+                'user_id' => $user->id,
+                'transaction_id' => $payment->charges->data[0]->id,
+                'total' => $payment->charges->data[0]->amount
+            ]);
+
+            // attach order to pivot table
+            foreach (json_decode($request->input('cart'), true) as $item) {
+                $order->products()->attach($item['product']['id'], ['quantity' => $item['quantity']]);
+            }
+
+            // return order with products (lazy-loaded)
+            $order->load('products');
+
+            return $order;
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
 

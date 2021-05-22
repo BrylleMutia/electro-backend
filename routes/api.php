@@ -25,7 +25,7 @@ use App\Http\Controllers\UsersController;
 
 Route::post("/test", [UsersController::class, 'test']);
 
-// PUBLIC ROUTES
+// AUTH ROUTES --------------
 Route::prefix('buyer')->group(function () {
     Route::post('/register', [UsersController::class, 'register']);
     Route::post('/login', [UsersController::class, 'login']);
@@ -37,8 +37,16 @@ Route::prefix('seller')->group(function () {
     Route::post('/login', [SellersController::class, 'login']);
     Route::get('/logout', [SellersController::class, 'logout']);
 });
+// -------------- end
 
-Route::middleware('auth:sanctum')->get('/verify', [UsersController::class, 'verify']);
+
+// PROTECTED ROUTES --------------
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/verify', [UsersController::class, 'verify']);
+    Route::post("/purchase", [UsersController::class, 'purchase']);
+});
+// --------------- end
+
 
 Route::get('/sellers', [SellersController::class, 'index']);
 Route::get('/sellers/{id}', [SellersController::class, 'show']);
@@ -52,7 +60,3 @@ Route::get('/products/search/{name}', [ProductsController::class, 'search']);
 Route::apiResource('products', ProductsController::class);
 
 
-// PROTECTED ROUTES
-Route::group(['middleware' => 'auth:sanctum'], function () {
-    //
-});
