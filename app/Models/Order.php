@@ -16,16 +16,24 @@ class Order extends Model
         'transaction_id',
         'total'
     ];
-
+    
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
-        'items' => 'array'
+        'items' => 'array',
+        'created_at' => 'datetime:m/d/Y-h:m:s',
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function products() {
+    public function products()
+    {
         return $this->belongsToMany(Product::class)->withPivot('quantity');
     }
 }

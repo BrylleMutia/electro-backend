@@ -182,6 +182,21 @@ class UsersController extends Controller
 
 
     /**
+     * Get all orders from current user
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function orders(Request $request)
+    {
+        $user_orders = User::with("orders.products")->findOrFail(auth()->user()->id)->orders;
+
+        return $user_orders;
+    }
+
+
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

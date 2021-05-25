@@ -44,6 +44,7 @@ Route::prefix('seller')->group(function () {
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/verify', [UsersController::class, 'verify']);
     Route::post("/purchase", [UsersController::class, 'purchase']);
+    Route::get("/buyer/orders", [UsersController::class, 'orders']);
 });
 // --------------- end
 

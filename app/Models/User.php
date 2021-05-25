@@ -55,19 +55,27 @@ class User extends Authenticatable implements JWTSubject
         'cart_items' => 'array'
     ];
 
-    public function getJWTIdentifier() {
+    public function getJWTIdentifier()
+    {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims() {
+    public function getJWTCustomClaims()
+    {
         return [];
     }
 
-    public function orders() {
-        $this->hasMany(Order::class, 'user_id');
+    public function orders()
+    {
+        return $this->hasMany(Order::class, "user_id")->orderByDesc('created_at');
     }
-    
-    public function role() {
+
+    public function role()
+    {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function reviews() {
+        return $this->hasMany(Review::class, 'user_id');
     }
 }
