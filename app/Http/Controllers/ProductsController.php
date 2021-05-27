@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Review;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class ProductsController extends Controller
     {
         $limit = request()->query('limit');
 
-        if($limit > 0) {
+        if ($limit > 0) {
             // get products with a certain limit
             $products = Product::with('categories:id,name', 'offer', 'seller')->take($limit)->orderBy('created_at', 'desc')->get();
         } else {
@@ -46,7 +47,7 @@ class ProductsController extends Controller
         //     $image_url = cloudinary()->upload($product_image->getRealPath())->getSecurePath();
         //     array_push($images_path, $image_url);
         // }
-        
+
         // single image upload
         $images_path = $request->file('product_image')->storeOnCloudinary('products')->getSecurePath();
         $product->product_image = $images_path;
@@ -107,5 +108,33 @@ class ProductsController extends Controller
         $product = Product::where('product_name', 'like', '%' . $name . '%')->get();
 
         return response()->json($product, 200);
+    }
+
+    /**
+     * Add new product review
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function review(Request $request)
+    {
+        $fields = $request->validate([
+            'product_id' => ['required', "numeric"],
+            'rating' => ['required', 'numeric', 'min:1', 'max:5'],
+            'feedback' => ['required', 'string']
+        ]);
+
+        $review = Review::with("user")->updateOrCreate([
+            'user_id' => auth()->user()->id,
+            'product_id' => $fields['product_id'],
+        ], [
+            'rating' => $fields['rating'],
+            'feedback' => $fields['feedback']
+        ]);
+
+        if ($review->save()) {
+            $updated_reviews = Product::findOrFail($fields['product_id'])->reviews->load("user");
+            return response()->json($updated_reviews, 200);
+        }
     }
 }

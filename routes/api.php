@@ -9,6 +9,7 @@ use App\Http\Controllers\SellersController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\UsersController;
 
 /*
@@ -58,6 +59,5 @@ Route::apiResource('offers', OfferController::class);
 Route::apiResource('categories', CategoriesController::class);
 
 Route::get('/products/search/{name}', [ProductsController::class, 'search']);
+Route::post("/product/review", [ProductsController::class, 'review']);
 Route::apiResource('products', ProductsController::class);
-
-
