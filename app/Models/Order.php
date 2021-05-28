@@ -16,7 +16,7 @@ class Order extends Model
         'transaction_id',
         'total'
     ];
-    
+
     /**
      * The attributes that should be cast.
      *
@@ -24,7 +24,7 @@ class Order extends Model
      */
     protected $casts = [
         'items' => 'array',
-        'created_at' => 'datetime:m/d/Y-h:m:s',
+        'created_at' => 'datetime:m/d/Y-H:i:s',
     ];
 
     public function user()
