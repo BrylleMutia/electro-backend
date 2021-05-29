@@ -203,12 +203,14 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $user = User::findOrFail($id);
+        $user = User::findOrFail(auth()->user()->id);
+
+        // ** NEED VALIDATION HERE **
         $user->update($request->all());
 
-        if ($user->save()) return response()->json(["status" => "updated", "user" => $user], 200);
+        if ($user->save()) return response()->json($user, 200);
     }
 
     /**

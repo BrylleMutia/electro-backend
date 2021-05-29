@@ -26,11 +26,18 @@ use App\Http\Controllers\UsersController;
 
 Route::post("/test", [UsersController::class, 'test']);
 
-// AUTH ROUTES --------------
+// BUYER ROUTES 
 Route::prefix('buyer')->group(function () {
+    // AUTH ROUTES (buyer)
     Route::post('/register', [UsersController::class, 'register']);
     Route::post('/login', [UsersController::class, 'login']);
     Route::get('/logout', [UsersController::class, 'logout']);
+
+    // PROTECTED ROUTES (buyer)
+    Route::middleware("auth:sanctum")->group(function() {
+        Route::get("/orders", [UsersController::class, 'orders']);
+        Route::post('/update', [UsersController::class, 'update']);
+    });
 });
 
 Route::prefix('seller')->group(function () {
@@ -41,11 +48,11 @@ Route::prefix('seller')->group(function () {
 // -------------- end
 
 
-// PROTECTED ROUTES --------------
+
+// PROTECTED ROUTES 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/verify', [UsersController::class, 'verify']);
     Route::post("/purchase", [UsersController::class, 'purchase']);
-    Route::get("/buyer/orders", [UsersController::class, 'orders']);
 });
 // --------------- end
 
