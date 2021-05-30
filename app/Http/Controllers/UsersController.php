@@ -210,6 +210,12 @@ class UsersController extends Controller
         // ** NEED VALIDATION HERE **
         $user->update($request->all());
 
+        // update user image
+        if ($request->hasFile('image')) {
+            $image_path = $request->file('image')->storeOnCloudinary('users')->getSecurePath();
+            $user->image = $image_path;
+        }
+
         if ($user->save()) return response()->json($user, 200);
     }
 
