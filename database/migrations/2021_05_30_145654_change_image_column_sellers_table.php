@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeImageColumnInSellersTable extends Migration
+class ChangeImageColumnSellersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -25,8 +25,6 @@ class ChangeImageColumnInSellersTable extends Migration
      */
     public function down()
     {
-        Schema::table('sellers', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

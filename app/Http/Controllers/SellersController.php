@@ -142,12 +142,22 @@ class SellersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $seller = Seller::findOrFail(auth()->guard('seller')->user()->id);
+
+        // ** NEED VALIDATION HERE **
+        $seller->update($request->all());
+
+        // update seller image
+        if ($request->hasFile('image')) {
+            $image_path = $request->file('image')->storeOnCloudinary('sellers')->getSecurePath();
+            $seller->image = $image_path;
+        }
+
+        if ($seller->save()) return response()->json($seller, 200);
     }
 
     /**

@@ -40,13 +40,21 @@ Route::prefix('buyer')->group(function () {
     });
 });
 
+// SELLER ROUTES
 Route::prefix('seller')->group(function () {
     Route::post('/register', [SellersController::class, 'register']);
     Route::post('/login', [SellersController::class, 'login']);
     Route::get('/logout', [SellersController::class, 'logout']);
-});
-// -------------- end
 
+    // PROTECTED ROUTES (seller)
+    Route::middleware("auth:sanctum")->group(function() {
+        Route::post('/update', [SellersController::class, 'update']);
+    });
+});
+
+Route::get('/sellers', [SellersController::class, 'index']);
+Route::get('/sellers/{id}', [SellersController::class, 'show']);
+// -------------- end
 
 
 // PROTECTED ROUTES 
@@ -57,8 +65,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 // --------------- end
 
 
-Route::get('/sellers', [SellersController::class, 'index']);
-Route::get('/sellers/{id}', [SellersController::class, 'show']);
 
 Route::get('/offers/{title}', [OfferController::class, 'products']);
 Route::apiResource('offers', OfferController::class);
