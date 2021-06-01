@@ -128,7 +128,8 @@ class SellersController extends Controller
 
     /**
      * Display the specified resource.
-     *
+     * 
+     * @access PUBLIC
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -137,6 +138,23 @@ class SellersController extends Controller
         $seller = Seller::with('products')->findOrFail($id);
         return $seller;
     }
+
+
+    /**
+     * FOR SELLER DASHBOARD! --------------
+     * Display detailed information related to specified resource.
+     * 
+     * @access PRIVATE
+     * @return \Illuminate\Http\Response
+     */
+    public function info(Request $request)
+    {
+        // $seller = Seller::with('products')->findOrFail(auth()->guard('seller')->user()->id);
+        $seller = Seller::with('products.orders.user')->findOrFail(18); // CHANGE ID IF ON PRODUCTION
+        return $seller;
+    }
+
+
 
     /**
      * Update the specified resource in storage.

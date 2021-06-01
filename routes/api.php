@@ -34,7 +34,7 @@ Route::prefix('buyer')->group(function () {
     Route::get('/logout', [UsersController::class, 'logout']);
 
     // PROTECTED ROUTES (buyer)
-    Route::middleware("auth:sanctum")->group(function() {
+    Route::middleware("auth:sanctum")->group(function () {
         Route::get("/orders", [UsersController::class, 'orders']);
         Route::post('/update', [UsersController::class, 'update']);
     });
@@ -42,18 +42,21 @@ Route::prefix('buyer')->group(function () {
 
 // SELLER ROUTES
 Route::prefix('seller')->group(function () {
+    // PROTECTED ROUTES (seller)
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post('/update', [SellersController::class, 'update']);
+        Route::get('/info', [SellersController::class, 'info']);
+    });
+
+    // AUTH ROUTES
     Route::post('/register', [SellersController::class, 'register']);
     Route::post('/login', [SellersController::class, 'login']);
     Route::get('/logout', [SellersController::class, 'logout']);
 
-    // PROTECTED ROUTES (seller)
-    Route::middleware("auth:sanctum")->group(function() {
-        Route::post('/update', [SellersController::class, 'update']);
-    });
+    // PUBLIC ROUTES
+    Route::get('/', [SellersController::class, 'index']);
+    Route::get('/{id}', [SellersController::class, 'show']);
 });
-
-Route::get('/sellers', [SellersController::class, 'index']);
-Route::get('/sellers/{id}', [SellersController::class, 'show']);
 // -------------- end
 
 
