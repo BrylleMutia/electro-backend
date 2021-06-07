@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ProductsController extends Controller
 {
@@ -37,7 +39,36 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        $product = Product::create($request->all());
+        // try {
+        // $user = auth()->guard("seller")->user();
+        // if (!$user) throw ValidationException::withMessages(["Unauthorized access"]);
+
+        $fields = $request->validate([
+            'product_name' => ['required', 'string'],
+            'price' => ['required', 'numeric'],
+            'description' => ['required', 'string'],
+            'product_image' => ['required', 'image'],
+            'seller_id' => ['required', 'numeric', "exists:sellers,id"],
+            'offer_id' => ['exists:offers,id', 'nullable'],
+            'categories' => ['required'],
+            'categories.*' => ['required', 'exists:categories,id', 'numeric'],
+        ]);
+
+        // single image upload
+        $images_path = $request->file('product_image')->storeOnCloudinary('products')->getSecurePath();
+
+        $product = Product::create([
+            'product_name' => $fields["product_name"],
+            'price' => $fields["price"],
+            'description' => $fields["description"],
+            'slug' => Str::slug($fields['product_name']),
+            'product_image' => $images_path,
+            'seller_id' => $fields['seller_id'],
+            'offer_id' => $fields['offer_id'],
+        ]);
+
+        // convert all array of id to integer first then attach to pivot
+        $product->categories()->attach(array_map('intval', json_decode($fields["categories"])));
 
         // // multiple image upload
         // $images_path = [];
@@ -48,13 +79,13 @@ class ProductsController extends Controller
         //     array_push($images_path, $image_url);
         // }
 
-        // single image upload
-        $images_path = $request->file('product_image')->storeOnCloudinary('products')->getSecurePath();
-        $product->product_image = $images_path;
 
         if ($product->save()) {
-            return response()->json($product, 200);
+            return response()->json($product->load('categories:id,name', 'offer', 'seller'), 200);
         }
+        // } catch (\Exception $e) {
+        //     return response()->json(['message' => $e->getMessage()], 500);
+        // }
     }
 
     /**
