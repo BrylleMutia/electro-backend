@@ -16,12 +16,11 @@ class Product extends Model
     protected $fillable = [
         'product_name',
         'price',
-        'slug',
         'product_image',
         'description',
-        'category_id',
         'seller_id',
-        'offer_id'
+        'offer_id',
+        'slug'
     ];
 
     protected $casts = [
@@ -36,7 +35,7 @@ class Product extends Model
     }
 
     public function orders() {
-        return $this->belongsToMany(Order::class, 'order_product');
+        return $this->belongsToMany(Order::class, 'order_product')->withPivot('quantity');
     }
 
     public function seller() {

@@ -45,7 +45,7 @@ Route::prefix('seller')->group(function () {
     // PROTECTED ROUTES (seller)
     Route::middleware("auth:sanctum")->group(function () {
         Route::post('/update', [SellersController::class, 'update']);
-        Route::get('/info', [SellersController::class, 'info']);
+        Route::get('/products', [SellersController::class, 'products']);
     });
 
     // AUTH ROUTES
@@ -68,12 +68,22 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 // --------------- end
 
 
+// PRODUCTS
+Route::prefix('products')->group(function () {
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("/", [ProductsController::class, "store"]);
+        Route::post("/review", [ProductsController::class, 'review']);
+    });
+    
+    Route::get("/{id}", [ProductsController::class, "show"]);
+    Route::get('/search/{name}', [ProductsController::class, 'search']);
+    Route::get("/", [ProductsController::class, 'index']);
+});
+// ------------- end
+
 
 Route::get('/offers/{title}', [OfferController::class, 'products']);
 Route::apiResource('offers', OfferController::class);
 
 Route::middleware("auth:sanctum")->apiResource('categories', CategoriesController::class);
 
-Route::get('/products/search/{name}', [ProductsController::class, 'search']);
-Route::post("/product/review", [ProductsController::class, 'review']);
-Route::apiResource('products', ProductsController::class);

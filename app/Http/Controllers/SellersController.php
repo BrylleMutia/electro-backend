@@ -147,13 +147,11 @@ class SellersController extends Controller
      * @access PRIVATE
      * @return \Illuminate\Http\Response
      */
-    public function info(Request $request)
+    public function products(Request $request)
     {
-        // $seller = Seller::with('products')->findOrFail(auth()->guard('seller')->user()->id);
-        $seller = Seller::with('products.orders.user')->findOrFail(18); // CHANGE ID IF ON PRODUCTION
+        $seller = Seller::with('products.orders.user')->findOrFail(auth()->guard('seller')->user()->id);
         return $seller;
     }
-
 
 
     /**
