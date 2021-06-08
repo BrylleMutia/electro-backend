@@ -27,23 +27,23 @@ use App\Http\Controllers\UsersController;
 Route::post("/test", [UsersController::class, 'test']);
 
 // BUYER ROUTES 
-Route::prefix('buyer')->group(function () {
+Route::group(['prefix' => 'buyer'], function () {
     // AUTH ROUTES (buyer)
     Route::post('/register', [UsersController::class, 'register']);
     Route::post('/login', [UsersController::class, 'login']);
     Route::get('/logout', [UsersController::class, 'logout']);
 
     // PROTECTED ROUTES (buyer)
-    Route::middleware("auth:sanctum")->group(function () {
+    Route::group(['middleware' => "auth:sanctum"], function () {
         Route::get("/orders", [UsersController::class, 'orders']);
         Route::post('/update', [UsersController::class, 'update']);
     });
 });
 
 // SELLER ROUTES
-Route::prefix('seller')->group(function () {
+Route::group(['prefix' => 'seller'], function () {
     // PROTECTED ROUTES (seller)
-    Route::middleware("auth:sanctum")->group(function () {
+    Route::group(['middleware' => "auth:sanctum"], function () {
         Route::post('/update', [SellersController::class, 'update']);
         Route::get('/products', [SellersController::class, 'products']);
     });
@@ -69,12 +69,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
 // PRODUCTS
-Route::prefix('products')->group(function () {
-    Route::middleware("auth:sanctum")->group(function () {
+Route::group(['prefix' => 'products'], function () {
+    Route::group(['middleware' => "auth:sanctum"], function () {
         Route::post("/", [ProductsController::class, "store"]);
         Route::post("/review", [ProductsController::class, 'review']);
     });
-    
+
     Route::get("/{id}", [ProductsController::class, "show"]);
     Route::get('/search/{name}', [ProductsController::class, 'search']);
     Route::get("/", [ProductsController::class, 'index']);
@@ -86,4 +86,3 @@ Route::get('/offers/{title}', [OfferController::class, 'products']);
 Route::apiResource('offers', OfferController::class);
 
 Route::middleware("auth:sanctum")->apiResource('categories', CategoriesController::class);
-
