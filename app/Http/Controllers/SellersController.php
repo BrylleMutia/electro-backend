@@ -149,8 +149,9 @@ class SellersController extends Controller
      */
     public function products(Request $request)
     {
-        $seller = Seller::with('products.orders.user')->findOrFail(auth()->guard('seller')->user()->id);
-        return $seller;
+        $seller = Seller::findOrFail(auth()->guard('seller')->user()->id);
+        $seller_products = $seller->products->load("orders.user", "categories");
+        return $seller_products;
     }
 
 

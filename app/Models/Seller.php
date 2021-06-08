@@ -66,7 +66,7 @@ class Seller extends Authenticatable implements JWTSubject
     }
 
     public function products() {
-        return $this->hasMany(Product::class, 'seller_id');
+        return $this->hasMany(Product::class, 'seller_id')->orderByDesc("created_at");
     }
 
     public function sales() {
