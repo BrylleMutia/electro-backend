@@ -44,7 +44,7 @@ class ProductsController extends Controller
         // if (!$user) throw ValidationException::withMessages(["Unauthorized access"]);
 
         $fields = $request->validate([
-            'product_name' => ['required', 'string'],
+            'product_name' => ['required', 'string', 'min:4', 'max:40'],
             'price' => ['required', 'numeric'],
             'description' => ['required', 'string'],
             'product_image' => ['required', 'image'],
