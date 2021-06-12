@@ -31,7 +31,7 @@ class ProductFactory extends Factory
         $offer = Offer::all()->random();
 
         // for product name, combine random company name with product as suffix
-        $productSuffixes = ['Sweater', 'Pants', 'Shirt', 'Glasses', 'Hat', 'Socks'];
+        $productSuffixes = ['Phone', 'Laptop', 'Speakers', 'Tablet', 'Headphones', 'TV'];
         $name = $this->faker->company . ' ' . Arr::random($productSuffixes);
 
         $image_urls = [
