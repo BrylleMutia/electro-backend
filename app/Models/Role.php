@@ -12,4 +12,7 @@ class Role extends Model
     protected $fillable = [
         'role'
     ];
+
+    public const IS_BUYER = 1;
+    public const IS_SELLER = 2;
 }

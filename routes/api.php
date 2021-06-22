@@ -43,7 +43,7 @@ Route::group(['prefix' => 'buyer'], function () {
 // SELLER ROUTES
 Route::group(['prefix' => 'seller'], function () {
     // PROTECTED ROUTES (seller)
-    Route::group(['middleware' => "auth:sanctum"], function () {
+    Route::group(['middleware' => ["auth:sanctum", 'is_seller']], function () {
         Route::post('/update', [SellersController::class, 'update']);
         Route::get('/products', [SellersController::class, 'products']);
     });
