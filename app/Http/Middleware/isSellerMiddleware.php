@@ -18,8 +18,8 @@ class isSellerMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!auth()->check() || !auth()->user()->role_id == Role::IS_SELLER) {
-            abort(403, "User unauthorized");
+        if(!auth()->guard("seller")->check() || !auth()->guard("seller")->user()) {
+            return response()->json(['message' => "User unauthorized"], 403);
         }
 
         return $next($request);
