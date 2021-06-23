@@ -149,9 +149,19 @@ class SellersController extends Controller
      */
     public function products(Request $request)
     {
-        $seller = Seller::findOrFail(auth()->guard('seller')->user()->id);
-        $seller_products = $seller->products->load("orders.user", "categories");
+        $seller_products = auth()->guard('seller')->user()->products->load("orders.user", "categories");
         return $seller_products;
+    }
+    
+    /**
+     * Get orders for current seller
+     * 
+     * @access PRIVATE
+     * @return \Illuminate\Http\Response
+     */
+    public function orders() {
+        $orders = auth()->guard('seller')->user()->products->load('orders');
+        return response()->json($orders, 200);
     }
 
 

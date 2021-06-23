@@ -9,6 +9,7 @@ use App\Http\Controllers\SellersController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\UsersController;
 
@@ -46,6 +47,7 @@ Route::group(['prefix' => 'seller'], function () {
     Route::group(['middleware' => ["auth:sanctum", 'is_seller']], function () {
         Route::post('/update', [SellersController::class, 'update']);
         Route::get('/products', [SellersController::class, 'products']);
+        Route::get('/orders', [SellersController::class, 'orders']);
     });
 
     // AUTH ROUTES
@@ -80,6 +82,13 @@ Route::group(['prefix' => 'products'], function () {
     Route::get("/", [ProductsController::class, 'index']);
 });
 // ------------- end
+
+
+// ORDERS
+Route::group(['prefix' => 'orders', 'middleware' => 'is_seller'], function() {
+    Route::get('/', [OrdersController::class, 'index']);
+    Route::patch('/update/{id}', [OrdersController::class, 'update']);
+});
 
 
 Route::get('/offers/{title}', [OfferController::class, 'products']);
