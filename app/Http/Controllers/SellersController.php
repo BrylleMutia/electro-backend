@@ -149,7 +149,7 @@ class SellersController extends Controller
      */
     public function products(Request $request)
     {
-        $seller_products = auth()->guard('seller')->user()->products->load("orders.user", "categories");
+        $seller_products = auth()->guard('seller')->user()->products->load("orders.user", "orders.status", "categories");
         return $seller_products;
     }
     

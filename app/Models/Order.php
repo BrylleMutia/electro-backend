@@ -38,6 +38,6 @@ class Order extends Model
     }
 
     public function status() {
-        return $this->hasOne(Status::class, 'status_id');
+        return $this->belongsTo(Status::class, 'status_id');
     }
 }

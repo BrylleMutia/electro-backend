@@ -19,7 +19,7 @@ class Status extends Model
     protected const IS_SHIPPED = 2;
     protected const IS_DELIVERED = 3;
 
-    public function order() {
+    public function orders() {
         return $this->hasMany(Order::class, 'status_id');
     }
 }
