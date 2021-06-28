@@ -69,11 +69,11 @@ class Seller extends Authenticatable implements JWTSubject
         return $this->hasMany(Product::class, 'seller_id')->orderByDesc("created_at");
     }
 
-    public function sales() {
-        return $this->hasMany(Sale::class, 'seller_id');
+    public function orders() {
+        return $this->belongsToMany(Order::class);
     }
 
     public function role() {
         return $this->belongsTo(Role::class, 'role_id');
-    }
+    }   
 }

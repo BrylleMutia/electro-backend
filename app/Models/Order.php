@@ -40,4 +40,8 @@ class Order extends Model
     public function status() {
         return $this->belongsTo(Status::class, 'status_id');
     }
+
+    public function sellers() {
+        return $this->belongsToMany(Seller::class);
+    }
 }
