@@ -150,7 +150,7 @@ class UsersController extends Controller
             // so that user details will also be sent to stripe
             $user->createOrGetStripeCustomer();
 
-            // DOCS: https://laravel.com/docs/8.x/billing#single-charges
+            // * DOCS: https://laravel.com/docs/8.x/billing#single-charges
             $payment = $user->charge(
                 $request->input('amount') . "00",   // include cents (lowest denominator needed here)
                 $request->input('payment_method_id')
@@ -166,10 +166,20 @@ class UsersController extends Controller
                 'total' => $payment->charges->data[0]->amount
             ]);
 
-            // attach order to pivot table
+            // attach order to pivot table (products / sellers)
+            $sellers = [];
             foreach (json_decode($request->input('cart'), true) as $item) {
                 $order->products()->attach($item['product']['id'], ['quantity' => $item['quantity']]);
+
+                // TODO: check if seller_id is already recorded for this order
+                // to avoid duplicates
+                if (!in_array($item['product']['seller_id'], $sellers)) {
+                    array_push($sellers, $item['product']['seller_id']);
+                }
             }
+
+            // attach involved sellers for current order
+            $order->sellers()->sync($sellers);
 
             // return order with products (lazy-loaded)
             $order->load('products');
@@ -207,7 +217,7 @@ class UsersController extends Controller
     {
         $user = User::findOrFail(auth()->user()->id);
 
-        // ** NEED VALIDATION HERE **
+        // TODO: NEED VALIDATION HERE 
         $user->update($request->all());
 
         // update user image

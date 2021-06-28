@@ -14,7 +14,7 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = Order::all();
+        $orders = Order::with('user', 'products', 'status')->get();
         return response()->json($orders, 200);
     }
 
@@ -37,7 +37,6 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        
     }
 
     /**

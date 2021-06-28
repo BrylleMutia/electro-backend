@@ -152,15 +152,20 @@ class SellersController extends Controller
         $seller_products = auth()->guard('seller')->user()->products->load("orders.user", "orders.status", "categories");
         return $seller_products;
     }
-    
+
     /**
      * Get orders for current seller
      * 
      * @access PRIVATE
      * @return \Illuminate\Http\Response
      */
-    public function orders() {
-        $orders = auth()->guard('seller')->user()->products->load('orders');
+    public function orders()
+    {
+        // filter order to only return products owned by current seller
+        $orders = auth()->guard('seller')->user()->orders->load(['user', 'status', 'products' => function ($query) {
+            $query->where('seller_id', auth()->guard('seller')->user()->id);
+        }]);
+
         return response()->json($orders, 200);
     }
 
