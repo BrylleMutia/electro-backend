@@ -56,7 +56,7 @@ class OrdersController extends Controller
             $order = Order::findOrFail($id);
             $order->status_id = $fields["status_id"];
 
-            if ($order->save()) return response()->json($order, 200);
+            if ($order->save()) return response()->json($order->load("status"), 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 403);
         }
