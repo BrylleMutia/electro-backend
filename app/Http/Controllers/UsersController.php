@@ -171,7 +171,7 @@ class UsersController extends Controller
             foreach (json_decode($request->input('cart'), true) as $item) {
                 $order->products()->attach($item['product']['id'], ['quantity' => $item['quantity']]);
 
-                // TODO: check if seller_id is already recorded for this order
+                // *check if seller_id is already recorded for this order
                 // to avoid duplicates
                 if (!in_array($item['product']['seller_id'], $sellers)) {
                     array_push($sellers, $item['product']['seller_id']);
@@ -199,7 +199,7 @@ class UsersController extends Controller
      */
     public function orders(Request $request)
     {
-        $user_orders = User::with("orders.products")->findOrFail(auth()->user()->id)->orders;
+        $user_orders = User::with("orders.products", "orders.status")->findOrFail(auth()->user()->id)->orders;
 
         return $user_orders;
     }
