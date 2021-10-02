@@ -39,6 +39,8 @@ class CreateSellerTable extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('seller');
+        Schema::enableForeignKeyConstraints();
     }
 }
